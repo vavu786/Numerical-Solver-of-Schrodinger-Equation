@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 choice = int(input("Book's code (1) or problem's code? (2): "))
-
+#choice = 2
 filename = "wave.data" if choice == 1 else "ch4prob13.txt"
 
 with open(filename, "r") as f:
@@ -13,6 +13,6 @@ y_axis = np.array([point[1] for point in nums])
 
 plt.plot(x_axis, y_axis)
 
-plt.xlim([-1.0, 6.0]) if choice == 1 else plt.xlim([-1.0, 6.0])  # [-1.0, 6.0]
+plt.xlim([-6.0, 6.0]) if choice == 1 else plt.xlim([-6.0, 6.0])  # [-1.0, 6.0]
 
 plt.show()

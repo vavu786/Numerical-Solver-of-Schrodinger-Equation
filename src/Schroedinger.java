@@ -16,7 +16,7 @@ public class Schroedinger {
     static double u[] = new double[nx+1];
 
     public static void main(String argv[]) throws FileNotFoundException {
-        double del = 1e-6, e = 24.2, de = 0.1;
+        double del = 1e-6, e = 2.4, de = 0.1;
         // Find the eigenvalue via the secant search
         e = secant(ni, del, e, de);
         // Output the wavefunction to a file
@@ -130,13 +130,18 @@ public class Schroedinger {
 //    }
 
 
+//    public static double v(double x) {
+//        if (x < 0.0 || x > 5.0) {
+//            return 50.0;
+//        }
+//        else {
+//            return 10.0 * x;
+//        }
+//    }
+
+    // Harmonic Oscillator
     public static double v(double x) {
-        if (x < 0.0 || x > 5.0) {
-            return 50.0;
-        }
-        else {
-            return 10.0 * x;
-        }
+        return 0.5 * x*x;
     }
 
 //    public static double v(double x) {

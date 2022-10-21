@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.lang.*;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 
 public class ch4_prob_13 {
     static final int n = 300; // Number of iterations for Runge-Kutta
@@ -18,11 +19,14 @@ public class ch4_prob_13 {
     static double[] ul = new double[2]; // values of ul0[] and ul1[] at a particular point
     static double[] ur = new double[2]; // values of ul0[] and ul1[] at a particular point
     static double[] u = new double[n + 1]; // The actual wavefunction phi, using ul for the left and ur for the right
+    static int countPrint = 0;
+    private static final DecimalFormat df = new DecimalFormat("0.000");
+
 
     public static void main(String[] args) throws FileNotFoundException {
         double del = 1e-6; // Tolerance for root search (below this value = 0)
-        double e = 13.0; // Initial guess for eigenenergy
-        double de = 0.1; // Initial change in e for root search
+        double e = 2.5; // Initial guess for eigenenergy
+        double de = 0.05; // Initial change in e for root search
 
         /* The root search. Returns the eigenvalue. The function of the root search depends on phi left anf phi right.
          *  phi left and phi right depend on the Runge-Kutta algorithm to create them.
@@ -135,8 +139,12 @@ public class ch4_prob_13 {
         // Convert turning point to an index i as the upper bound for rungeKutta loop
         int turnIndex = turning_index(e0); // ONLY COMMENT FOR FINITE OR INFINITE WELL
         //int turnIndex = 190;
-        System.out.println(x1 + (h*turnIndex));
-
+        //System.out.println(x1 + (h*turnIndex));
+        if (countPrint == 0) {
+            System.out.println(turnIndex);
+            System.out.println(ul0.length+ur0.length);
+            countPrint++;
+        }
         // Runge Kutta for ul, from -5 -> turning point + 1
         for (int i = 0; i < turnIndex+2; i++) {
             double x = x1 + i * h;
@@ -169,19 +177,26 @@ public class ch4_prob_13 {
         }
         double sum = simpson(u_squared, h);
         sum = Math.sqrt(sum);
-        for (int i = 0; i < n+1; i++) u[i] /= sum; // Edits the global value u (which represents the wavefunction phi)
+        for (int i = 0; i < n+1; i++) {
+            u[i] /= sum; // Edits the global value u (which represents the wavefunction phi)
+            ul0[i] /= sum;
+            ur0[i] /= sum;
+        }
 
-        return (ur0[turnIndex-1]-ur0[turnIndex+1]-ul0[turnIndex-1]+ul0[turnIndex+1]) / (2*h*ur0[turnIndex]);
+        System.out.print(String.valueOf(df.format(e0))+ ": " + String.valueOf(u[turnIndex-1]) + " " +
+                         String.valueOf(u[turnIndex]) + " " + String.valueOf(u[turnIndex+1]) + "\n");
+
+        return (ul0[turnIndex-1]-ul0[turnIndex+1]-ur0[turnIndex-1]+ur0[turnIndex+1]) / (2*h*ur0[turnIndex]);
     }
     // Linear Potential
-    public static double V(double x) {
-        if (x < 0.0 || x > 5.0) {
-            return 50.0;
-        }
-        else {
-            return 10.0 * x;
-        }
-    }
+//    public static double V(double x) {
+//        if (x < 0.0 || x > 5.0) {
+//            return 50.0;
+//        }
+//        else {
+//            return 10.0 * x;
+//        }
+//    }
 
     // Book Potential
 //    public static double V(double x) {
@@ -199,6 +214,13 @@ public class ch4_prob_13 {
 //            return 0.0;
 //        }
 //    }
+
+    // Harmonic Oscillator
+    public static double V(double x) {
+        return 0.5 * x*x;
+    }
+
+
     // Method to provide the hyperbolic cosine needed.
     public static double cosh(double x) {
         return (Math.exp(x)+Math.exp(-x))/2;
